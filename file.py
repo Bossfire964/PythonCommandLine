@@ -1,0 +1,1 @@
+import argumentsprint(arguments.args[1])print(arguments.args[2])
