@@ -7,9 +7,11 @@ commandarguements = []
 
 commandwriting = []
 
+debug = False
 
 
-def delete(item):
+
+def delete(item, mode):
 	try:
 		value = commandname.index(item)
 		temp = commandname
@@ -24,8 +26,8 @@ def delete(item):
 		f.write("\n")
 		f.write(value2)
 		f.close()
-		os.remove(item + ".py")
-		print("Deleted %s from command list" % (item))
+		if mode == True:
+			os.remove(item + ".py")
 	except Exception as e:
 		print("Error: Command does not exist")
 
@@ -70,6 +72,8 @@ def newvalue(name, arg):
 
 
 def decode(currentinput):
+	global debug
+
 	if lineinput == "/e":
 		sys.exit()
 	
@@ -87,6 +91,11 @@ def decode(currentinput):
 				print("Error: This needs %s arguments not %s" % (commandarguements[commandname.index(currentinput.split()[1])], len(currentinput.split()) - 2))
 		except Exception as e:
 			print("Error: That is not a current command")
+			if debug == False:
+				print(e)
+			else:
+				raise e
+			
 	if currentinput.split()[0] == "new":
 		if len(currentinput.split()) == 3:
 			i = 0
@@ -108,15 +117,31 @@ def decode(currentinput):
 
 		else:
 			print("Error: You need 2 arguments")
+	if currentinput.split()[0] == "add":
+		if len(currentinput.split()) == 3:
+			newvalue(currentinput.split()[1], currentinput.split()[2])
+			print("Added " + currentinput.split()[1] + "to command list")
+		else:
+			print("Error: This must have 2 arguments")
+
+	if currentinput.split()[0] == "edit":
+		if len(currentinput.split()) == 3:
+			delete(currentinput.split()[1], False)
+			newvalue(currentinput.split()[1], currentinput.split()[2])
+			print("Changed the file %s to have %s arguments" % (currentinput.split()[1], currentinput.split()[2]))
+
 	if currentinput.split()[0] == "del":
-		delete(currentinput.split()[1])
+		delete(currentinput.split()[1], True)
+		print("Deleted %s from command list" % (currentinput.split()[1]))
+	if currentinput == "debug":
+		if debug == True:
+			debug = False
+			print("Debug Set to False")
+		else:
+			debug = True
+			print("Debug set to True")
 
 while (True):
 	updatevalues()
 	lineinput = input("cmd>> ")
 	decode(lineinput)
-
-
-
-
-	
